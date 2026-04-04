@@ -1,3 +1,9 @@
+"""Main module for the Strongly Connected Components project.
+
+This module serves as the entry point for running correctness tests,
+performance benchmarks, or memory tests based on configuration settings.
+"""
+
 # Strongly Connected Components Algorithms
 
 This repository contains implementations and comparisons of algorithms for finding strongly connected components (SCCs) in directed graphs. It was originally a university project from 2017/2018 for the Advanced Algorithms and Parallel Programming course at Politecnico di Milano.
@@ -65,6 +71,15 @@ All settings are in `config.py`:
 - `TEST_NODE_SIZE`: Number of nodes for test graphs.
 - `TEST_EDGE_PROBABILITY`: Edge probability for test graphs.
 - `DEBUG`: Enable debug output.
+
+## File Organization
+
+### Test Graph Storage
+Memory test graphs are stored in `test_graphs/memory_test_graph.pkl` directory with proper `.pkl` extension for pickle-serialized NetworkX graphs. This directory is created automatically and not tracked in version control.
+
+### Output Files
+- Performance graphs are saved to `graphs/` directory with `.png` extension
+- Graph files use `.pkl` extension (pickle format) for reliable NetworkX graph serialization
 
 ## Project Structure
 

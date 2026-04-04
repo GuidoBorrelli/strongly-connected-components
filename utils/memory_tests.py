@@ -16,6 +16,9 @@ TEST_NODE_SIZE = config.TEST_NODE_SIZE
 TEST_EDGE_PROBABILITY = config.TEST_EDGE_PROBABILITY
 TEST_ALG = config.ALG_TEST
 
+# File path for storing test graphs
+MEMORY_TEST_GRAPH_FILE = "./test_graphs/memory_test_graph.pkl"
+
 
 def memory_test():
     """Test memory usage of SCC algorithms.
@@ -31,12 +34,15 @@ def memory_test():
     if GRAPH:
         graph = nx.gnp_random_graph(TEST_NODE_SIZE, TEST_EDGE_PROBABILITY, seed=None, directed=True)
         # Save graph
-        pickle.dump(graph, open("./graph-memory-test", "wb"))
-        print("Graph saved")
+        os.makedirs(os.path.dirname(MEMORY_TEST_GRAPH_FILE), exist_ok=True)
+        with open(MEMORY_TEST_GRAPH_FILE, "wb") as f:
+            pickle.dump(graph, f)
+        print(f"Graph saved to {MEMORY_TEST_GRAPH_FILE}")
     else:
         process = psutil.Process(os.getpid())
         # Read graph
-        graph = pickle.load(open("./graph-memory-test", "rb"))
+        with open(MEMORY_TEST_GRAPH_FILE, "rb") as f:
+            graph = pickle.load(f)
         print(nx.density(graph))
         tara = process.memory_info().rss
         if TEST_ALG == 1:

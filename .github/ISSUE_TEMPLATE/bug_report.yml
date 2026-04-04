@@ -1,0 +1,94 @@
+name: Bug Report
+description: Report a bug or issue you've found
+title: "[BUG] "
+labels: ["bug"]
+
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thank you for reporting a bug! Please fill out the form below to help us understand and fix the issue.
+
+  - type: input
+    id: title
+    attributes:
+      label: Title
+      description: Brief title for the bug
+      placeholder: "e.g., Tarjan algorithm crashes with large graphs"
+    validations:
+      required: true
+
+  - type: textarea
+    id: description
+    attributes:
+      label: Description
+      description: Detailed description of the bug
+      placeholder: "Describe what happened..."
+    validations:
+      required: true
+
+  - type: textarea
+    id: reproduction
+    attributes:
+      label: Steps to Reproduce
+      description: How to reproduce the bug
+      placeholder: |
+        1. Set config parameter X to Y
+        2. Run `python main.py`
+        3. Observe error...
+    validations:
+      required: true
+
+  - type: textarea
+    id: expected
+    attributes:
+      label: Expected Behavior
+      description: What should happen instead
+      placeholder: "The algorithm should..."
+    validations:
+      required: true
+
+  - type: dropdown
+    id: algorithm
+    attributes:
+      label: Which algorithm is affected?
+      options:
+        - Tarjan
+        - Nuutila
+        - Pearce
+        - All of them
+        - Not sure
+
+  - type: input
+    id: python-version
+    attributes:
+      label: Python Version
+      description: "e.g., 3.9, 3.10, 3.11"
+      placeholder: "3.9"
+
+  - type: input
+    id: os
+    attributes:
+      label: Operating System
+      description: "e.g., Ubuntu 20.04, macOS 12, Windows 11"
+      placeholder: "Ubuntu 20.04"
+
+  - type: textarea
+    id: error-logs
+    attributes:
+      label: Error Logs or Stack Trace
+      description: Any relevant error messages
+      render: python
+
+  - type: checkboxes
+    id: checklist
+    attributes:
+      label: Pre-submission Checklist
+      options:
+        - label: I have checked that this issue hasn't been reported before
+          required: true
+        - label: I am using the latest version of the code
+          required: true
+        - label: I have followed the CONTRIBUTING guidelines
+          required: true
+

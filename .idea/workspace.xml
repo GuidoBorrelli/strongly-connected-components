@@ -7,25 +7,26 @@
     <option name="autoReloadType" value="ALL" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="100f8efd-42e5-4919-abf6-5f114fd22643" name="Default" comment="">
-      <change afterPath="$PROJECT_DIR$/.idea/copilotDiffState.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/algorithms/__init__.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/config.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/requirements.txt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/tests/__init__.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/utils/__init__.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/AA_project.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/AA_project.iml" afterDir="false" />
+    <list default="true" id="100f8efd-42e5-4919-abf6-5f114fd22643" name="Default" comment="Updating to modern Python practices, reorganizing the project structure into proper packages, adding comprehensive documentation, fixing bugs and improving code quality.">
+      <change afterPath="$PROJECT_DIR$/.github/ISSUE_TEMPLATE/bug_report.yml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.github/ISSUE_TEMPLATE/feature_request.yml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.github/PULL_REQUEST_TEMPLATE.md" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.github/workflows/code-quality.yml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.github/workflows/tests.yml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/CITATION.cff" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/CODE_OF_CONDUCT.md" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/CONTRIBUTING.md" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/GITHUB_ACTIONS_QUICK_START.md" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/LICENSE" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/docs/ALGORITHMS.md" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/docs/GITHUB_ACTIONS_SETUP.md" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Presentazione progetto AA.pdf" beforeDir="false" afterPath="$PROJECT_DIR$/project_presentation_strongly_connected_components_Borrelli.pdf" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/README.md" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/alg1.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/alg2.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/alg3.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/graph-memory-test" beforeDir="false" afterPath="$PROJECT_DIR$/graph-memory-test" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/main.py" beforeDir="false" afterPath="$PROJECT_DIR$/main.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/memory.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/performance.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/stack.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/test.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/graph-memory-test" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/memory-graphs.xlsx" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/utils/memory_tests.py" beforeDir="false" afterPath="$PROJECT_DIR$/utils/memory_tests.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -36,6 +37,9 @@
     <persistenceIdMap>
       <entry key="_/Users/guido/GitHub/strongly-connected-components" value="3BuJphkUUat4J6WP5GYhzzg8JNh" />
     </persistenceIdMap>
+  </component>
+  <component name="CopilotUserSelectedChatMode">
+    <option name="chatModeId" value="Agent" />
   </component>
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
@@ -112,6 +116,12 @@
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
   </component>
+  <component name="GitHubPullRequestSearchHistory"><![CDATA[{
+  "lastFilter": {
+    "state": "OPEN",
+    "assignee": "GuidoBorrelli"
+  }
+}]]></component>
   <component name="GithubPullRequestsUISettings"><![CDATA[{
   "selectedUrlAndAccountId": {
     "url": "https://github.com/GuidoBorrelli/strongly-connected-components.git",
@@ -164,7 +174,7 @@
     "SHARE_PROJECT_CONFIGURATION_FILES": "true",
     "codeWithMe.voiceChat.enabledByDefault": "false",
     "com.intellij.ml.llm.matterhorn.ej.ui.settings.DefaultModelSelectionForGA.v1": "true",
-    "git-widget-placeholder": "master",
+    "git-widget-placeholder": "refactor/project-modernization",
     "junie.onboarding.icon.badge.shown": "true",
     "last_opened_file_path": "/Users/guido/GitHub/strongly-connected-components",
     "node.js.detected.package.eslint": "true",
@@ -227,8 +237,17 @@
       <option name="presentableId" value="Default" />
       <updated>1775333205256</updated>
       <workItem from="1775333206297" duration="215000" />
-      <workItem from="1775333438872" duration="1301000" />
+      <workItem from="1775333438872" duration="2957000" />
     </task>
+    <task id="LOCAL-00001" summary="Updating to modern Python practices, reorganizing the project structure into proper packages, adding comprehensive documentation, fixing bugs and improving code quality.">
+      <option name="closed" value="true" />
+      <created>1775334935681</created>
+      <option name="number" value="00001" />
+      <option name="presentableId" value="LOCAL-00001" />
+      <option name="project" value="LOCAL" />
+      <updated>1775334935681</updated>
+    </task>
+    <option name="localTasksCounter" value="2" />
     <servers />
   </component>
   <component name="ToolWindowManager">
@@ -256,6 +275,10 @@
   </component>
   <component name="VcsContentAnnotationSettings">
     <option name="myLimit" value="2678400000" />
+  </component>
+  <component name="VcsManagerConfiguration">
+    <MESSAGE value="Updating to modern Python practices, reorganizing the project structure into proper packages, adding comprehensive documentation, fixing bugs and improving code quality." />
+    <option name="LAST_COMMIT_MESSAGE" value="Updating to modern Python practices, reorganizing the project structure into proper packages, adding comprehensive documentation, fixing bugs and improving code quality." />
   </component>
   <component name="editorHistoryManager">
     <entry file="file://$PROJECT_DIR$/memory.py">
