@@ -1,9 +1,3 @@
-"""Tarjan's algorithm for finding strongly connected components.
-
-This module implements Tarjan's linear-time algorithm for finding SCCs
-in a directed graph using depth-first search and a stack.
-"""
-
 from utils import stack as s
 from typing import Dict, List
 import networkx as nx
@@ -11,16 +5,8 @@ import networkx as nx
 DEBUG = False
 
 
+# Perform and evaluate Tarjan algorithm
 def apply_alg(graph: nx.DiGraph) -> Dict[int, int]:
-    """Apply Tarjan's algorithm to find strongly connected components.
-
-    Args:
-        graph: A directed graph represented as a NetworkX DiGraph.
-
-    Returns:
-        A dictionary mapping each node to its component representative.
-        Nodes in the same SCC have the same representative value.
-    """
     DIM_NODES = len(graph)
     current_counter = 0
     stack = s.Stack()
@@ -30,11 +16,6 @@ def apply_alg(graph: nx.DiGraph) -> Dict[int, int]:
     in_component_list: List[bool] = [False] * DIM_NODES
 
     def visit(v: int) -> None:
-        """Recursive DFS visit function for Tarjan's algorithm.
-
-        Args:
-            v: The current node being visited.
-        """
         if DEBUG:
             print(f"Visiting: {v}")
         nonlocal graph, current_counter, order, stack, root, in_component_list

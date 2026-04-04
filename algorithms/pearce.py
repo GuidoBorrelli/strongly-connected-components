@@ -1,9 +1,3 @@
-"""Pearce's algorithm for finding strongly connected components.
-
-This module implements Pearce's PEA_FIND_SSC2 algorithm, an efficient
-method for finding SCCs in directed graphs.
-"""
-
 from utils import stack as s
 from typing import Dict, List
 import networkx as nx
@@ -11,27 +5,14 @@ import networkx as nx
 DEBUG = False
 
 
+# Perform and evaluate PEA_FIND_SSC2 algorithm
 def apply_alg(graph: nx.DiGraph) -> Dict[int, int]:
-    """Apply Pearce's algorithm to find strongly connected components.
-
-    Args:
-        graph: A directed graph represented as a NetworkX DiGraph.
-
-    Returns:
-        A dictionary mapping each node to its component representative.
-        Nodes in the same SCC have the same representative value.
-    """
     stack = s.Stack()
     index = 1
     c = graph.number_of_nodes() - 1
     rindex: Dict[int, int] = {}
 
     def visit(v: int) -> None:
-        """Recursive visit function for Pearce's algorithm.
-
-        Args:
-            v: The current node being visited.
-        """
         nonlocal graph, stack, index, c, rindex
         if DEBUG:
             print(f"Visiting: {v}")
