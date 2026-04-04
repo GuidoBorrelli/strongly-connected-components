@@ -1,42 +1,51 @@
+"""Memory testing utilities for SCC algorithms.
+
+This module provides functions to measure memory usage of the SCC algorithms
+during execution.
+"""
+
 import networkx as nx
 import os
 import psutil
-import alg1 as tarjan
-import alg2 as nuutila
-import alg3 as pearce
+from algorithms import tarjan, nuutila, pearce
+import pickle
+import config
 
-GRAPH = False
-TEST_NODE_SIZE = 600
-TEST_EDGE_PROBABILITY = 0.03
-TEST_ALG = 1
-
-
-# This function handle both graph creation and algorithm test
-# Controller is given by global variable usage
-# TEST_ALG is: 1(Pearce), 2(Nuutila), 3(Tarjan)
-# GRAPH is: True(Generate and save in a file a graph), False(Function load the graph file and apply the algorithm)
-# TEST_NODE_SIZE & TEST_EDGE_PROBABILITY: parameters for graph random creation
+GRAPH = config.GRAPH
+TEST_NODE_SIZE = config.TEST_NODE_SIZE
+TEST_EDGE_PROBABILITY = config.TEST_EDGE_PROBABILITY
+TEST_ALG = config.ALG_TEST
 
 
 def memory_test():
+    """Test memory usage of SCC algorithms.
+
+    Either generates and saves a test graph, or loads a saved graph and
+    measures memory usage while running the specified algorithm.
+
+    The algorithm to test is determined by TEST_ALG:
+    - 1: Pearce's algorithm
+    - 2: Nuutila's algorithm
+    - 3: Tarjan's algorithm
+    """
     if GRAPH:
         graph = nx.gnp_random_graph(TEST_NODE_SIZE, TEST_EDGE_PROBABILITY, seed=None, directed=True)
         # Save graph
-        nx.write_gpickle(graph, "./graph-memory-test")
+        pickle.dump(graph, open("./graph-memory-test", "wb"))
         print("Graph saved")
     else:
         process = psutil.Process(os.getpid())
         # Read graph
-        graph = nx.read_gpickle("./graph-memory-test")
+        graph = pickle.load(open("./graph-memory-test", "rb"))
         print(nx.density(graph))
         tara = process.memory_info().rss
-        if TEST_ALG == 3:
+        if TEST_ALG == 1:
             _ = pearce.apply_alg(graph)
             memory_used = process.memory_info().rss
         elif TEST_ALG == 2:
             _ = nuutila.apply_alg(graph)
             memory_used = process.memory_info().rss
-        elif TEST_ALG == 1:
+        elif TEST_ALG == 3:
             _ = tarjan.apply_alg(graph)
             memory_used = process.memory_info().rss
         else:
