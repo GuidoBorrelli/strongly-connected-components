@@ -1,31 +1,31 @@
 import time
+from typing import Dict, Tuple
 import networkx as nx
 import pandas as pd
-import alg1 as tarjan
-import alg2 as nuutila
-import alg3 as pearce
-import performance
-import test
-import memory
+from algorithms import tarjan, nuutila, pearce
+from utils import benchmarking
+from tests import correctness_tests
+from utils import memory_tests
+import config
 
-SIZE_BENCHMARK = 10000
-TEST = True
-MEMORY_TEST = True
-TEST_NODE_SIZE = 601
-TEST_EDGE_PROBABILITY = 0.05
-DEBUG = False
+SIZE_BENCHMARK = config.SIZE_BENCHMARK
+TEST = config.TEST
+MEMORY_TEST = config.MEMORY_TEST
+TEST_NODE_SIZE = config.TEST_NODE_SIZE
+TEST_EDGE_PROBABILITY = config.TEST_EDGE_PROBABILITY
+DEBUG = config.DEBUG
 
 
 # Density variable can assume indicative values: 0(sparse graph), 1(normal graph), 2(dense graph)
 # Nodes dimensional variable are set to: 50, 100, 200, 600
 # Saves performance of the density/dimensional combination
-def create_test_set():
+def create_test_set() -> Dict[str, pd.DataFrame]:
     dimension_list = [50, 100, 200, 600]
     density_list = [0, 1, 2]
     # Create a dataframe to save performance for each algorithm
-    df1 = pd.DataFrame(columns={'Sparse', 'Medium', 'Dense'}, index=dimension_list)
-    df2 = pd.DataFrame(columns={'Sparse', 'Medium', 'Dense'}, index=dimension_list)
-    df3 = pd.DataFrame(columns={'Sparse', 'Medium', 'Dense'}, index=dimension_list)
+    df1 = pd.DataFrame(columns=['Sparse', 'Medium', 'Dense'], index=dimension_list)
+    df2 = pd.DataFrame(columns=['Sparse', 'Medium', 'Dense'], index=dimension_list)
+    df3 = pd.DataFrame(columns=['Sparse', 'Medium', 'Dense'], index=dimension_list)
     performance_dict = {'Tarjan': df1, 'Nuutila': df2, 'Pearce': df3}
     for graph_density in density_list:
         column_1 = []
@@ -54,8 +54,8 @@ def create_test_set():
 
 # Creates the set of graph to generate given a specified couple of node dimension and density of graphs
 # Manipulate performance of every graph and aggregate them according to the algorithm
-def create_benchmark(nodes_dimension, graph_density):
-    print("Create benchmark : Nodes {}  -  Density type {}".format(nodes_dimension, graph_density))
+def create_benchmark(nodes_dimension: int, graph_density: int) -> Dict[str, list]:
+    print(f"Create benchmark : Nodes {nodes_dimension}  -  Density type {graph_density}")
     # List containing time records for each algorithm
     times1_list = []
     times2_list = []
@@ -75,7 +75,7 @@ def create_benchmark(nodes_dimension, graph_density):
 
 # Deprecated - Initially idea was to adapt size of test set on different cases
 # Given characteristics of set of graphs to generate, set the graph cardinality of the benchmark
-def set_quantity(nodes_dimension, graph_density):
+def set_quantity(nodes_dimension: int, graph_density: int) -> int:
     if graph_density <= 10 ** 2:
         card = nodes_dimension
     elif 1 == graph_density:
@@ -88,9 +88,9 @@ def set_quantity(nodes_dimension, graph_density):
 # A random graph is created with the given characteristics
 # Based on density of graph, different functions are used due to complexity gains
 # Performance on algorithms are evaluated for each graph after creation
-def create_direct_graph(n, d):
+def create_direct_graph(n: int, d: int) -> Tuple[float, float, float]:
     # An heuristic to build valid edge probabilities
-    def switch_density(argument):
+    def switch_density(argument: int) -> float:
         switcher = {
             0: 1 / n,
             1: 3 / n,
@@ -98,7 +98,7 @@ def create_direct_graph(n, d):
         }
         value = switcher.get(argument, False)
         if value is False:
-            raise "Invalid Density: " + argument
+            raise ValueError(f"Invalid Density: {argument}")
         return switcher[argument]
 
     p = switch_density(d)
@@ -110,7 +110,7 @@ def create_direct_graph(n, d):
 
 
 # Call algorithms to be applied on the graph
-def apply_alg(graph):
+def apply_alg(graph: nx.DiGraph) -> Tuple[float, float, float]:
     # Keep track of time of each algorithm executed
     t0 = time.time()
     pearce.apply_alg(graph)
@@ -124,21 +124,21 @@ def apply_alg(graph):
     return duration0, duration1, duration2
 
 
-def main():
+def main() -> int:
     if not TEST:
         print("Start")
         dict_performance = create_test_set()
         if DEBUG:
-            print("Tarjan performance: {}".format(dict_performance['Tarjan']))
-            print("Nuutila performance: {}".format(dict_performance['Nuutila']))
-            print("Pearce performance: {}".format(dict_performance['Pearce']))
-        performance.plot_result(dict_performance)
+            print(f"Tarjan performance: {dict_performance['Tarjan']}")
+            print(f"Nuutila performance: {dict_performance['Nuutila']}")
+            print(f"Pearce performance: {dict_performance['Pearce']}")
+        benchmarking.plot_result(dict_performance)
         print("End")
     else:
         if not MEMORY_TEST:
-            test.test_algorithms(TEST_NODE_SIZE, TEST_EDGE_PROBABILITY)
+            correctness_tests.test_algorithms(TEST_NODE_SIZE, TEST_EDGE_PROBABILITY)
         else:
-            memory.memory_test()
+            memory_tests.memory_test()
     return 0
 
 

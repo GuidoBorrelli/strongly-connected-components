@@ -1,0 +1,23 @@
+cff-version: 1.2.0
+title: "Strongly Connected Components: Comparative Analysis of Tarjan, Nuutila, and Pearce Algorithms"
+message: "If you use this software, please cite it using these metadata."
+type: software
+authors:
+  - family-names: "Borrelli"
+    given-names: "Guido"
+    affiliation: "Politecnico di Milano"
+    orcid: "https://orcid.org/YOUR-ORCID-HERE"
+abstract: "Implementation and performance comparison of three algorithms for finding strongly connected components in directed graphs: Tarjan's algorithm, Nuutila's algorithm, and Pearce's algorithm. Includes correctness testing, performance benchmarking, and memory analysis."
+keywords:
+  - "strongly connected components"
+  - "graph algorithms"
+  - "Tarjan algorithm"
+  - "Nuutila algorithm"
+  - "Pearce algorithm"
+  - "performance analysis"
+license: "MIT"
+repository-code: "https://github.com/yourusername/strongly-connected-components"
+url: "https://github.com/yourusername/strongly-connected-components"
+date-released: 2018-06-01
+version: 1.0.0
+

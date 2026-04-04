@@ -1,17 +1,34 @@
+"""Correctness testing for SCC algorithms.
+
+This module provides functions to verify that the implemented SCC algorithms
+produce correct results by comparing against NetworkX's built-in SCC finder.
+"""
+
 import random
 import networkx as nx
-import alg1 as tarjan
-import alg2 as nuutila
-import alg3 as pearce
+from algorithms import tarjan, nuutila, pearce
 import colorsys
 import math
 import matplotlib.pyplot as plt
+import config
 
 
-DEBUG = False
+DEBUG = config.DEBUG
 
 
-def test_algorithms(node_size, edge_probability):
+def test_algorithms(node_size: int = 0, edge_probability: float = 0.0):
+    """Test the correctness of all SCC algorithms.
+
+    Generates a random directed graph and runs all three SCC algorithms,
+    comparing their results against NetworkX's strongly_connected_components.
+
+    Args:
+        node_size: Number of nodes in the test graph. If 0, a random size is chosen.
+        edge_probability: Probability of edge creation. If 0, a random probability is chosen.
+
+    The function prints correctness results and optionally displays a graph
+    visualization for small graphs (≤40 nodes).
+    """
     if node_size == 0:
         node_size = random.randint(10, 600)
     if edge_probability == 0:
@@ -64,8 +81,7 @@ def test_algorithms(node_size, edge_probability):
     # In case of a False, you can select its result to debug: change res_x variable
     if node_size <= 40:
         # Select group of edges for each SSC not composed only by one node for the sake of coloring
-        edges = [[e for e in graph.edges if res_1[e[0]] == n and res_1[e[0]] == res_1[e[1]]] for n in set(res_1) if
-                 res_1.count(n) > 1]
+        edges = [[e for e in graph.edges if res_1[e[0]] == n and res_1[e[0]] == res_1[e[1]]] for n in set(res_1.values()) if list(res_1.values()).count(n) > 1]
         pos = nx.circular_layout(graph)
         nx.draw_networkx(graph, pos=pos)
         hbase = 0.3
