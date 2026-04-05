@@ -1,150 +1,35 @@
-# GitHub Actions Quick Setup
+# GitHub Actions Quick Start
 
-## 📋 What Was Created
+This repository already includes:
 
-### Workflow Files
-- ✅ `.github/workflows/tests.yml` - Automated testing on 3 OS × 4 Python versions
-- ✅ `.github/workflows/code-quality.yml` - Code linting and style checks
+- `.github/workflows/tests.yml` for correctness runs on Ubuntu, macOS, and Windows across Python 3.8 to 3.11
+- `.github/workflows/code-quality.yml` for `flake8`, `black`, and `isort`
+- issue templates and a pull request template
 
-### Templates
-- ✅ `.github/ISSUE_TEMPLATE/bug_report.yml` - Bug report form
-- ✅ `.github/ISSUE_TEMPLATE/feature_request.yml` - Feature request form
-- ✅ `.github/PULL_REQUEST_TEMPLATE.md` - PR guidelines
+## Enable and Verify
 
-### Documentation
-- ✅ `docs/GITHUB_ACTIONS_SETUP.md` - Complete setup guide
+1. Commit the workflow files and push your branch.
+   ```bash
+   git add .github docs/GITHUB_ACTIONS_SETUP.md GITHUB_ACTIONS_QUICK_START.md
+   git commit -m "Add GitHub Actions automation"
+   git push origin <branch-name>
+   ```
+2. Open <https://github.com/GuidoBorrelli/strongly-connected-components/actions>
+3. Confirm that the `Tests` and `Code Quality` workflows start running
 
----
+The workflows trigger on pushes and pull requests targeting `master`, `main`, or `develop`.
 
-## 🚀 Getting Started (3 Steps)
-
-### Step 1: Commit Changes
-```bash
-cd /Users/guido/GitHub/strongly-connected-components
-git add .github/
-git commit -m "Add GitHub Actions workflows and templates"
-```
-
-### Step 2: Push to GitHub
-```bash
-git push origin master
-```
-
-### Step 3: Verify
-1. Go to https://github.com/yourusername/strongly-connected-components
-2. Click **Actions** tab
-3. Your workflows should start running automatically
-
----
-
-## ✅ What Happens Automatically Now
-
-Every time you **push** or create a **pull request**:
-
-| Workflow | Tests | OS | Python Versions | Status |
-|----------|-------|----|-|--|
-| **Tests** | Correctness (3x) | Ubuntu, macOS, Windows | 3.8, 3.9, 3.10, 3.11 | 🟢 |
-| **Code Quality** | Linting, Formatting | Ubuntu | 3.9 | 🟡 |
-
----
-
-## 📊 Monitoring Workflows
-
-### View Status
-1. Click **Actions** tab in repository
-2. See all workflow runs with ✅ or ❌ status
-3. Click a run to see details
-
-### Branch Protection (Optional)
-1. Go to **Settings** → **Branches**
-2. Under "Branch protection rules"
-3. Require status checks to pass before merging
-4. Select `Tests` workflow
-
----
-
-## 🎯 Key Features
-
-✅ **Automatic Testing**
-- Runs on every push and PR
-- Tests across multiple Python versions
-- Tests on different OS
-
-✅ **Code Quality**
-- Style checks (flake8)
-- Formatting checks (black)
-- Import sorting (isort)
-
-✅ **User-Friendly**
-- Guided issue templates
-- PR checklist template
-- Clear error messages
-
----
-
-## 🔧 Configuration Options
-
-### Test on Different Python Versions
-Edit `.github/workflows/tests.yml`:
-```yaml
-python-version: ['3.9', '3.10', '3.11', '3.12']
-```
-
-### Skip Code Quality Checks
-Disable code-quality.yml or set `continue-on-error: true`
-
-### Change Trigger Events
-```yaml
-on:
-  push:
-    branches: [master, develop]  # Change branches
-  pull_request:
-    branches: [master]
-```
-
----
-
-## 📌 Add Badges to README
-
-Make status visible in your README:
+## Badge Snippets
 
 ```markdown
-## Status
-
-[![Tests](https://github.com/yourusername/strongly-connected-components/workflows/Tests/badge.svg)](https://github.com/yourusername/strongly-connected-components/actions)
-[![Code Quality](https://github.com/yourusername/strongly-connected-components/workflows/Code%20Quality/badge.svg)](https://github.com/yourusername/strongly-connected-components/actions)
+[![Tests](https://github.com/GuidoBorrelli/strongly-connected-components/actions/workflows/tests.yml/badge.svg)](https://github.com/GuidoBorrelli/strongly-connected-components/actions/workflows/tests.yml)
+[![Code Quality](https://github.com/GuidoBorrelli/strongly-connected-components/actions/workflows/code-quality.yml/badge.svg)](https://github.com/GuidoBorrelli/strongly-connected-components/actions/workflows/code-quality.yml)
 ```
 
----
+## Troubleshooting
 
-## 🚨 Troubleshooting
+- Workflows not running: check that the files are present in `.github/workflows/`
+- CI fails but local runs pass: compare Python versions and `requirements.txt`
+- Workflow is too slow: reduce the test matrix in the workflow file
 
-| Problem | Solution |
-|---------|----------|
-| Workflows not running | Check `.github/workflows/` directory exists |
-| Tests fail in CI but pass locally | Check Python version, check `requirements.txt` |
-| YAML error | Validate YAML syntax online, check indentation |
-| Workflow too slow | Reduce Python versions or OS tested |
-
----
-
-## 📚 Learn More
-
-- **Full Guide**: Read `docs/GITHUB_ACTIONS_SETUP.md`
-- **GitHub Docs**: https://docs.github.com/en/actions
-- **Workflow Syntax**: https://docs.github.com/en/actions/using-workflows/workflow-syntax-for-github-actions
-
----
-
-## ✨ Next: Enable GitHub Discussions
-
-1. Go to **Settings** → scroll to **Features**
-2. Check **Discussions** checkbox
-3. Save
-
-This allows users to ask questions about your algorithms!
-
----
-
-**Status**: GitHub Actions fully configured and ready! 🎉
-
+For details and customization examples, see `docs/GITHUB_ACTIONS_SETUP.md`.

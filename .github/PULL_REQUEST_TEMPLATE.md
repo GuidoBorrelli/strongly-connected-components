@@ -14,14 +14,13 @@
 
 ## Testing
 - [ ] I have tested this on my local machine
-- [ ] All tests pass: `python main.py`
+- [ ] I ran `python main.py` in the relevant mode
 - [ ] I have added tests for new functionality
 
 ## Checklist
 - [ ] My code follows the code style of this project
 - [ ] I have updated the documentation
 - [ ] I have added appropriate comments to my code
-- [ ] I have updated CHANGELOG.md
 - [ ] My changes don't introduce new warnings
 
 ## Screenshots (if applicable)
@@ -32,4 +31,3 @@
 
 ## Additional Notes
 <!-- Any other information that would be helpful -->
-

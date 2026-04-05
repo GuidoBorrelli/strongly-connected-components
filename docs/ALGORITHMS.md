@@ -4,6 +4,8 @@
 
 This document provides detailed information about the three SCC (Strongly Connected Components) algorithms implemented in this project.
 
+All implementations in this repository expect directed NetworkX graphs whose nodes are labeled with consecutive integers from `0` to `n - 1`.
+
 ## Tarjan's Algorithm
 
 ### Description
@@ -179,4 +181,3 @@ python main.py  # with MEMORY_TEST=True in config.py
 4. NetworkX Documentation: https://networkx.org/
 
 5. Graph Theory - Stanford Encyclopedia: https://plato.stanford.edu/entries/logic-graphs/
-
