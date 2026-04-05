@@ -1,51 +1,53 @@
-from utils import stack as s
-from typing import Dict, List
+"""Tarjan SCC implementation."""
+
 import networkx as nx
+
+from utils.stack import Stack
 
 DEBUG = False
 
+type ComponentMap = dict[int, int]
 
-# Perform and evaluate Tarjan algorithm
-def apply_alg(graph: nx.DiGraph) -> Dict[int, int]:
-    DIM_NODES = len(graph)
+
+def apply_alg(graph: nx.DiGraph) -> ComponentMap:
+    """Return a mapping from node to SCC representative using Tarjan's algorithm."""
+    node_count = graph.number_of_nodes()
     current_counter = 0
-    stack = s.Stack()
-    root: Dict[int, int] = {}
-    in_component: Dict[int, bool] = {}
-    order: List[int] = [DIM_NODES] * DIM_NODES
-    in_component_list: List[bool] = [False] * DIM_NODES
+    stack: Stack[int] = Stack()
+    root: ComponentMap = {}
+    order: list[int] = [node_count] * node_count
+    in_component: list[bool] = [False] * node_count
 
-    def visit(v: int) -> None:
+    def visit(node: int) -> None:
+        nonlocal current_counter
+
         if DEBUG:
-            print(f"Visiting: {v}")
-        nonlocal graph, current_counter, order, stack, root, in_component_list
-        root[v] = v
-        order[v] = current_counter
+            print(f"Visiting: {node}")
+
+        root[node] = node
+        order[node] = current_counter
         current_counter += 1
-        stack.push(v)
-        if DEBUG:
-            print(f"\tOutgoing edge: {len(graph.out_edges(v))}")
-        for out_edge in graph.out_edges(v):
-            w = out_edge[1]
-            # If the value of node w in the dictionary is still DIM_NODES, not yet visited
-            if order[w] == DIM_NODES:
-                visit(w)
-            if not in_component_list[w]:
-                if order[root[v]] > order[root[w]]:
-                    root[v] = root[w]
+        stack.push(node)
 
-        if root[v] == v:
+        if DEBUG:
+            print(f"\tOutgoing edge: {len(graph.out_edges(node))}")
+
+        for _, neighbor in graph.out_edges(node):
+            if order[neighbor] == node_count:
+                visit(neighbor)
+            if not in_component[neighbor] and order[root[node]] > order[root[neighbor]]:
+                root[node] = root[neighbor]
+
+        if root[node] == node:
             while True:
-                w = stack.pop()
-                in_component_list[w] = True
-                # Otherwise I don't have all references of all nodes updated to allow testing, - no side effects
-                root[w] = v
-                if v == w:
+                member = stack.pop()
+                in_component[member] = True
+                root[member] = node
+                if member == node:
                     break
-        return
 
     for node in graph.nodes:
-        # If the value of node w in the dictionary is still DIM_NODES, not yet visited
-        if order[node] == DIM_NODES:
+        if order[node] == node_count:
             visit(node)
+
     return root

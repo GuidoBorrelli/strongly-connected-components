@@ -1,0 +1,6 @@
+[tool.black]
+target-version = ["py314"]
+
+[tool.isort]
+profile = "black"
+py_version = 314

@@ -1,122 +1,127 @@
-"""Benchmarking utilities for SCC algorithms.
+"""Benchmarking utilities for SCC algorithms."""
 
-This module provides functions for statistical analysis of algorithm performance
-and visualization of results through plots.
-"""
+from statistics import StatisticsError, mean, variance
 
 import matplotlib.pyplot as plt
-from statistics import mean, variance, StatisticsError
 import numpy as np
+import pandas as pd
+
 import config
 
 DEBUG = config.DEBUG
 DIGITS_ACCURACY = config.DIGITS_ACCURACY
 
+type BenchmarkFrames = dict[str, pd.DataFrame]
 
-def extract_statistics(perf_list: list) -> tuple:
-    """Extract statistical measures from performance data.
 
-    Args:
-        perf_list: List of performance measurements (execution times).
-
-    Returns:
-        Tuple of (mean_time, variance) in milliseconds.
-    """
-    avg = round(mean(perf_list), DIGITS_ACCURACY)
+def extract_statistics(performance_samples: list[float]) -> tuple[float, float]:
+    """Extract mean time and variance from performance samples."""
+    average = round(mean(performance_samples), DIGITS_ACCURACY)
     try:
-        var = round(variance(perf_list, avg), DIGITS_ACCURACY)
+        sample_variance = round(variance(performance_samples, average), DIGITS_ACCURACY)
     except StatisticsError:
-        var = 0
-    return avg * 1000, var * 1000
+        sample_variance = 0
+    return average * 1000, sample_variance * 1000
 
 
-def get_values(performance_dict: dict, graph_type: str) -> tuple:
-    """Extract performance values for plotting.
+def get_values(
+    performance_dict: BenchmarkFrames,
+    graph_type: str,
+) -> tuple[np.ndarray, list[np.ndarray], list[np.ndarray]]:
+    """Extract performance values for plotting."""
+    tarjan_times = performance_dict["Tarjan"][graph_type]
+    nuutila_times = performance_dict["Nuutila"][graph_type]
+    pearce_times = performance_dict["Pearce"][graph_type]
 
-    Args:
-        performance_dict: Dictionary containing performance data for all algorithms.
-        graph_type: Type of graph ('Sparse', 'Medium', or 'Dense').
+    average_series: list[np.ndarray] = []
+    variance_series: list[np.ndarray] = []
+    tarjan_averages: list[float] = []
+    nuutila_averages: list[float] = []
+    pearce_averages: list[float] = []
+    tarjan_variances: list[float] = []
+    nuutila_variances: list[float] = []
+    pearce_variances: list[float] = []
+    x_values = np.array(tarjan_times.index)
 
-    Returns:
-        Tuple of (x_values, y_values, error_values) for plotting.
-    """
-    tarjan_times = performance_dict['Tarjan'][graph_type]
-    nuutila_times = performance_dict['Nuutila'][graph_type]
-    pearce_times = performance_dict['Pearce'][graph_type]
-    y, e = [], []
-    e_0, e_1, e_2 = [], [], []
-    y_0, y_1, y_2 = [], [], []
-    x = np.array(tarjan_times.index)
-    # Fill performance of each algorithm
-    for i in range(0, len(tarjan_times.index)):
-        avg_1, var_1 = extract_statistics(tarjan_times.iloc[i])
-        y_0.append(avg_1)
-        e_0.append(var_1)
-        avg_2, var_2 = extract_statistics(nuutila_times.iloc[i])
-        y_1.append(avg_2)
-        e_1.append(var_2)
-        avg_3, var_3 = extract_statistics(pearce_times.iloc[i])
-        y_2.append(avg_3)
-        e_2.append(var_3)
-    # Merge in a single list of lists algorithms' performance
-    y.append(np.array(y_0))
-    e.append(np.array(e_0))
-    y.append(np.array(y_1))
-    e.append(np.array(e_1))
-    y.append(np.array(y_2))
-    e.append(np.array(e_2))
-    return x, y, e
+    for index in range(len(tarjan_times.index)):
+        tarjan_average, tarjan_variance = extract_statistics(tarjan_times.iloc[index])
+        tarjan_averages.append(tarjan_average)
+        tarjan_variances.append(tarjan_variance)
+
+        nuutila_average, nuutila_variance = extract_statistics(
+            nuutila_times.iloc[index]
+        )
+        nuutila_averages.append(nuutila_average)
+        nuutila_variances.append(nuutila_variance)
+
+        pearce_average, pearce_variance = extract_statistics(pearce_times.iloc[index])
+        pearce_averages.append(pearce_average)
+        pearce_variances.append(pearce_variance)
+
+    average_series.append(np.array(tarjan_averages))
+    variance_series.append(np.array(tarjan_variances))
+    average_series.append(np.array(nuutila_averages))
+    variance_series.append(np.array(nuutila_variances))
+    average_series.append(np.array(pearce_averages))
+    variance_series.append(np.array(pearce_variances))
+    return x_values, average_series, variance_series
 
 
-def plot_graph(x, y, e, graph_type: str):
-    """Plot performance graphs for a specific graph type.
-
-    Args:
-        x: X-axis values (node counts).
-        y: Y-axis values (mean times for each algorithm).
-        e: Error values (variances for each algorithm).
-        graph_type: Type of graph being plotted.
-    """
-    # One color per each algorithm
-    colors = ['red', 'green', 'blue']
-    for k in range(3):
+def plot_graph(
+    x_values: np.ndarray,
+    mean_series: list[np.ndarray],
+    variance_series: list[np.ndarray],
+    graph_type: str,
+) -> None:
+    """Plot performance graphs for a specific graph type."""
+    colors = ["red", "green", "blue"]
+    for index, color in enumerate(colors):
         plt.figure(1)
-        plt.plot(x, y[k], mfc=colors[k], linestyle=':', marker='o', color=colors[k])
+        plt.plot(
+            x_values,
+            mean_series[index],
+            mfc=color,
+            linestyle=":",
+            marker="o",
+            color=color,
+        )
         plt.figure(2)
-        plt.plot(x, e[k], mfc=colors[k], linestyle='-.', marker='o', color=colors[k])
+        plt.plot(
+            x_values,
+            variance_series[index],
+            mfc=color,
+            linestyle="-.",
+            marker="o",
+            color=color,
+        )
+
     plt.figure(1)
-    plt.legend(['Tarjan', 'Nuutila', 'Pearce'], loc='upper left')
+    plt.legend(["Tarjan", "Nuutila", "Pearce"], loc="upper left")
     plt.title(f"{graph_type} graph - Mean time")
-    plt.xlabel('Number Of Nodes')
-    plt.ylabel('Mean time value [millisecs]')
+    plt.xlabel("Number of nodes")
+    plt.ylabel("Mean time [ms]")
     plt.ylim(0)
+
     plt.figure(2)
-    plt.legend(['Tarjan', 'Nuutila', 'Pearce'], loc='upper left')
+    plt.legend(["Tarjan", "Nuutila", "Pearce"], loc="upper left")
     plt.title(f"{graph_type} graph - Variance")
-    plt.xlabel('Number Of Nodes')
-    plt.ylabel('Variance')
+    plt.xlabel("Number of nodes")
+    plt.ylabel("Variance")
     plt.ylim(0)
+
     plt.figure(1)
     plt.savefig(f"./graphs/{graph_type}-results.png")
     plt.figure(2)
     plt.savefig(f"./graphs/{graph_type}-variance.png")
     plt.show()
-    return
 
 
-def plot_result(performance_dict: dict):
-    """Generate performance plots for all graph types.
+def plot_result(performance_dict: BenchmarkFrames) -> None:
+    """Generate performance plots for all graph types."""
+    sparse_values = get_values(performance_dict, "Sparse")
+    medium_values = get_values(performance_dict, "Medium")
+    dense_values = get_values(performance_dict, "Dense")
 
-    Args:
-        performance_dict: Dictionary containing performance data for all algorithms
-                         and graph types.
-    """
-    # This function let get data in a format useful to plot
-    x_sp, y_sp, e_sp = get_values(performance_dict, 'Sparse')
-    x_md, y_md, e_md = get_values(performance_dict, 'Medium')
-    x_de, y_de, e_de = get_values(performance_dict, 'Dense')
-    # This function plot the data for each category
-    plot_graph(x_sp, y_sp, e_sp, 'Sparse')
-    plot_graph(x_md, y_md, e_md, 'Medium')
-    plot_graph(x_de, y_de, e_de, 'Dense')
-    return
+    plot_graph(*sparse_values, "Sparse")
+    plot_graph(*medium_values, "Medium")
+    plot_graph(*dense_values, "Dense")

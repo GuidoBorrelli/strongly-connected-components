@@ -33,8 +33,8 @@ body:
       label: Steps to Reproduce
       description: How to reproduce the bug
       placeholder: |
-        1. Set config parameter X to Y
-        2. Run `python main.py`
+        1. Create a Python 3.14 environment
+        2. Run `python -m unittest discover -s tests -p 'test_*.py'`
         3. Observe error...
     validations:
       required: true
@@ -63,8 +63,8 @@ body:
     id: python-version
     attributes:
       label: Python Version
-      description: "e.g., 3.9, 3.10, 3.11"
-      placeholder: "3.9"
+      description: "This repository targets Python 3.14.x"
+      placeholder: "3.14.3"
 
   - type: input
     id: os
@@ -91,4 +91,3 @@ body:
           required: true
         - label: I have followed the CONTRIBUTING guidelines
           required: true
-
