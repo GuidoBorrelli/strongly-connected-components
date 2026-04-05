@@ -5,7 +5,7 @@ and visualization of results through plots.
 """
 
 import matplotlib.pyplot as plt
-from statistics import mean, median, variance, stdev, StatisticsError
+from statistics import mean, variance, StatisticsError
 import numpy as np
 import config
 
@@ -25,10 +25,8 @@ def extract_statistics(perf_list: list) -> tuple:
     avg = round(mean(perf_list), DIGITS_ACCURACY)
     try:
         var = round(variance(perf_list, avg), DIGITS_ACCURACY)
-        std = round(stdev(perf_list), DIGITS_ACCURACY)
     except StatisticsError:
         var = 0
-        std = 0
     return avg * 1000, var * 1000
 
 
@@ -42,25 +40,22 @@ def get_values(performance_dict: dict, graph_type: str) -> tuple:
     Returns:
         Tuple of (x_values, y_values, error_values) for plotting.
     """
-    times_alg1 = performance_dict['Tarjan']
-    times_alg2 = performance_dict['Nuutila']
-    times_alg3 = performance_dict['Pearce']
-    times_alg1 = times_alg1[graph_type]
-    times_alg2 = times_alg2[graph_type]
-    times_alg3 = times_alg3[graph_type]
+    tarjan_times = performance_dict['Tarjan'][graph_type]
+    nuutila_times = performance_dict['Nuutila'][graph_type]
+    pearce_times = performance_dict['Pearce'][graph_type]
     y, e = [], []
     e_0, e_1, e_2 = [], [], []
     y_0, y_1, y_2 = [], [], []
-    x = np.array(times_alg1.index)
+    x = np.array(tarjan_times.index)
     # Fill performance of each algorithm
-    for i in range(0, len(times_alg1.index)):
-        avg_1, var_1 = extract_statistics(times_alg1.iloc[i])
+    for i in range(0, len(tarjan_times.index)):
+        avg_1, var_1 = extract_statistics(tarjan_times.iloc[i])
         y_0.append(avg_1)
         e_0.append(var_1)
-        avg_2, var_2 = extract_statistics(times_alg2.iloc[i])
+        avg_2, var_2 = extract_statistics(nuutila_times.iloc[i])
         y_1.append(avg_2)
         e_1.append(var_2)
-        avg_3, var_3 = extract_statistics(times_alg3.iloc[i])
+        avg_3, var_3 = extract_statistics(pearce_times.iloc[i])
         y_2.append(avg_3)
         e_2.append(var_3)
     # Merge in a single list of lists algorithms' performance

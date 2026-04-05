@@ -1,0 +1,43 @@
+Risultati dei test hard-codati fatti sulla memoria:
+
+- Grafo 600 nodi sparso
+
+Pearce:
+Memory used: 79785984 - Tara: 78680064
+Increment: 1105920 - %: 1.405591129158207%
+
+Nuutila:
+Memory used: 80125952 - Tara: 79003648
+Increment: 1122304 - %: 1.420572376607217%
+
+Tarjan:
+Memory used: 80134144 - Tara: 78929920
+Increment: 1204224 - %: 1.525687597301505%
+
+- Grafo 600 nodi normal
+
+Pearce:
+Memory used: 82595840 - Tara: 81047552
+Increment: 1548288 - %: 1.910345176125739%
+
+Nuutila
+Memory used: 82849792 - Tara: 81362944
+Increment: 1486848 - %: 1.8274265002013692%
+
+Tarjan:
+Memory used: 82960384 - Tara: 81408000
+Increment: 1552384 - %: 1.9069182389937107%
+
+- Grafo 600 nodi dense
+
+Pearce:
+Memory used: 144629760 - Tara: 143089664
+Increment: 1540096 - %: 1.0763153374935592%
+
+Nuutila:
+Memory used: 144154624 - Tara: 142618624
+Increment: 1536000 - %: 1.0769981906430397%
+
+Tarjan:
+Memory used: 144515072 - Tara: 142966784
+Increment: 1548288 - %: 1.0829704331881733%
