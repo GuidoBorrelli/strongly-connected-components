@@ -1,59 +1,63 @@
-from utils import stack as s
-from typing import Dict, List
+"""Nuutila SCC implementation."""
+
 import networkx as nx
+
+from utils.stack import Stack
 
 DEBUG = False
 
+type ComponentMap = dict[int, int]
 
-# Perform and evaluate Nuutila algorithm 2
-def apply_alg(graph: nx.DiGraph) -> Dict[int, int]:
-    DIM_NODES = len(graph)
+
+def apply_alg(graph: nx.DiGraph) -> ComponentMap:
+    """Return a mapping from node to SCC representative using Nuutila's algorithm."""
+    node_count = graph.number_of_nodes()
     current_counter = 0
-    stack = s.Stack()
+    stack: Stack[int] = Stack()
     stack.push(-1)
-    root: Dict[int, int] = {}
-    in_component_list: List[bool] = [False] * DIM_NODES
-    order: List[int] = [DIM_NODES] * DIM_NODES
+    root: ComponentMap = {}
+    in_component: list[bool] = [False] * node_count
+    order: list[int] = [node_count] * node_count
 
-    def visit(v: int) -> None:
+    def visit(node: int) -> None:
+        nonlocal current_counter
+
         if DEBUG:
-            print(f"Visiting: {v}")
-        nonlocal current_counter, order, stack, root, graph, in_component_list
-        root[v] = v
-        order[v] = current_counter
+            print(f"Visiting: {node}")
+
+        root[node] = node
+        order[node] = current_counter
         current_counter += 1
-        in_component_list[v] = False
-        for out_edge in graph.out_edges(v):
-            w = out_edge[1]
-            if order[w] == DIM_NODES:
-                visit(w)
-            if not in_component_list[root[w]]:
-                if order[root[v]] > order[root[w]]:
-                    root[v] = root[w]
-        if root[v] == v:
-            if stack.peek() > -1 and order[stack.peek()] >= order[v]:
-                while stack.peek() > -1 and order[stack.peek()] >= order[v]:
-                    w = stack.pop()
-                    in_component_list[w] = True
-                    root[w] = v
-            else:
-                in_component_list[v] = True
-        elif not stack.contains(root[v]):
-            stack.push(root[v])
-        return
+        in_component[node] = False
+
+        for _, neighbor in graph.out_edges(node):
+            if order[neighbor] == node_count:
+                visit(neighbor)
+            if (
+                not in_component[root[neighbor]]
+                and order[root[node]] > order[root[neighbor]]
+            ):
+                root[node] = root[neighbor]
+
+        if root[node] == node:
+            while stack.peek() > -1 and order[stack.peek()] >= order[node]:
+                member = stack.pop()
+                in_component[member] = True
+                root[member] = node
+            in_component[node] = True
+        elif not stack.contains(root[node]):
+            stack.push(root[node])
 
     for node in graph.nodes:
-        # If the value of node w in the dictionary is still DIM_NODES, not yet visited
-        if order[node] == DIM_NODES:
+        if order[node] == node_count:
             visit(node)
 
-    # Due to let me test the results, I need to store all component reference of all nodes like in the other alg
-    def update(i: int) -> None:
-        nonlocal root
-        if root[i] != root[root[i]]:
-            update(root[i])
-            root[i] = root[root[i]]
+    def compress_path(node: int) -> None:
+        if root[node] != root[root[node]]:
+            compress_path(root[node])
+            root[node] = root[root[node]]
 
-    for i in root:
-        update(i)
+    for node in root:
+        compress_path(node)
+
     return root

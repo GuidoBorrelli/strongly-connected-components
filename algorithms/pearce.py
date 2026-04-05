@@ -1,48 +1,57 @@
-from utils import stack as s
-from typing import Dict, List
+"""Pearce SCC implementation."""
+
 import networkx as nx
+
+from utils.stack import Stack
 
 DEBUG = False
 
+type ComponentMap = dict[int, int]
 
-# Perform and evaluate PEA_FIND_SSC2 algorithm
-def apply_alg(graph: nx.DiGraph) -> Dict[int, int]:
-    stack = s.Stack()
+
+def apply_alg(graph: nx.DiGraph) -> ComponentMap:
+    """Return a mapping from node to SCC index using Pearce's algorithm."""
+    stack: Stack[int] = Stack()
     index = 1
-    c = graph.number_of_nodes() - 1
-    rindex: Dict[int, int] = {}
+    component_index = graph.number_of_nodes() - 1
+    reverse_index: ComponentMap = {node: 0 for node in graph.nodes}
 
-    def visit(v: int) -> None:
-        nonlocal graph, stack, index, c, rindex
+    def visit(node: int) -> None:
+        nonlocal index, component_index
+
         if DEBUG:
-            print(f"Visiting: {v}")
-        root = True
-        rindex[v] = index
+            print(f"Visiting: {node}")
+
+        is_root = True
+        reverse_index[node] = index
         index += 1
+
         if DEBUG:
-            print(f"\tOutgoing edge: {len(graph.out_edges(v))}")
-        for out_edge in graph.out_edges(v):
-            w = out_edge[1]
-            if rindex[w] == 0:
-                visit(w)
-            if rindex[w] < rindex[v]:
-                rindex[v] = rindex[w]
-                root = False
-        if root:
+            print(f"\tOutgoing edge: {len(graph.out_edges(node))}")
+
+        for _, neighbor in graph.out_edges(node):
+            if reverse_index[neighbor] == 0:
+                visit(neighbor)
+            if reverse_index[neighbor] < reverse_index[node]:
+                reverse_index[node] = reverse_index[neighbor]
+                is_root = False
+
+        if is_root:
             index -= 1
-            while (not stack.isEmpty()) and rindex[v] <= rindex[stack.peek()]:
-                w = stack.pop()
-                rindex[w] = c
+            while (
+                not stack.is_empty()
+                and reverse_index[node] <= reverse_index[stack.peek()]
+            ):
+                member = stack.pop()
+                reverse_index[member] = component_index
                 index -= 1
-            rindex[v] = c
-            c -= 1
+            reverse_index[node] = component_index
+            component_index -= 1
         else:
-            stack.push(v)
-        return
+            stack.push(node)
 
     for node in graph.nodes:
-        rindex[node] = 0
-    for node in graph.nodes:
-        if rindex[node] == 0:
+        if reverse_index[node] == 0:
             visit(node)
-    return rindex
+
+    return reverse_index

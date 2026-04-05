@@ -5,6 +5,8 @@
 This document provides detailed information about the three SCC (Strongly Connected Components) algorithms implemented in this project.
 
 All implementations in this repository expect directed NetworkX graphs whose nodes are labeled with consecutive integers from `0` to `n - 1`.
+The repository now targets Python 3.14 only.
+Python versions earlier than 3.14 are unsupported for this codebase.
 
 ## Tarjan's Algorithm
 
@@ -104,15 +106,15 @@ This algorithm assigns component IDs in descending order, which can be useful fo
 ## Testing Correctness
 
 All three algorithms are tested for correctness by:
-1. Generating random graphs
+1. Building deterministic and seeded random directed graphs
 2. Running all three algorithms
-3. Comparing results with NetworkX's built-in `strongly_connected_components()`
-4. Verifying that nodes in the same SCC have the same component ID
-5. Verifying that nodes NOT in the same SCC have different IDs
+3. Comparing their SCC partitions with NetworkX's built-in `strongly_connected_components()`
+4. Verifying that the repository's CLI harness still exits cleanly in correctness mode
 
 Run tests with:
 ```bash
-python main.py  # with TEST=True in config.py
+python -m unittest discover -s tests -p 'test_*.py'
+python main.py  # with TEST=True in config.py and Python 3.14
 ```
 
 ---
@@ -128,7 +130,7 @@ Performance is measured on graphs of different sizes and densities:
 
 Run benchmarks with:
 ```bash
-python main.py  # with TEST=False in config.py
+python main.py  # with TEST=False in config.py and Python 3.14
 ```
 
 Results are plotted in `graphs/` directory.
@@ -146,7 +148,7 @@ Memory usage is tracked using the `psutil` library:
 
 Run memory tests with:
 ```bash
-python main.py  # with MEMORY_TEST=True in config.py
+python main.py  # with MEMORY_TEST=True in config.py and Python 3.14
 ```
 
 ---

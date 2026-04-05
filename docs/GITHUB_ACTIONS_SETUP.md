@@ -4,7 +4,7 @@
 
 This repository uses GitHub Actions for two tasks:
 
-- correctness runs through `python main.py`
+- unit-test discovery through `python -m unittest discover -s tests -p 'test_*.py'`
 - code-quality checks with `flake8`, `black`, and `isort`
 
 Both workflows trigger on pushes and pull requests targeting `master`, `main`, or `develop`.
@@ -14,15 +14,15 @@ Both workflows trigger on pushes and pull requests targeting `master`, `main`, o
 ### `tests.yml`
 
 - Matrix: Ubuntu, macOS, Windows
-- Python: 3.8, 3.9, 3.10, 3.11
+- Python: 3.14
 - Installs dependencies from `requirements.txt`
+- Runs unit tests from `tests/test_scc_algorithms.py`
 - Runs `python main.py`
-- Repeats the correctness run three times
 
 ### `code-quality.yml`
 
 - Ubuntu only
-- Python 3.9
+- Python 3.14
 - Runs `flake8`
 - Checks formatting with `black --check`
 - Checks import order with `isort --check-only`
@@ -51,7 +51,7 @@ Then open <https://github.com/GuidoBorrelli/strongly-connected-components/action
 ```yaml
 strategy:
   matrix:
-    python-version: ['3.10', '3.11', '3.12']
+    python-version: ['3.14']
 ```
 
 ### Change the target branches
@@ -74,7 +74,7 @@ on:
 ## Troubleshooting
 
 - Workflow does not start: confirm the YAML files are in `.github/workflows/`
-- CI fails but local runs pass: compare Python versions and dependency resolution
+- CI fails but local runs pass: compare the local Python patch level against the CI Python 3.14 runner and reinstall `requirements.txt`
 - The matrix is too slow: reduce OS or Python combinations
 
 ## References

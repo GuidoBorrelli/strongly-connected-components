@@ -1,69 +1,32 @@
-"""Custom Stack implementation for educational purposes.
+"""Custom stack implementation used by the SCC algorithms."""
 
-This module provides a basic stack data structure implementation
-to demonstrate low-level data structure usage in SCC algorithms.
-"""
 
-class Stack:
-    """A simple stack implementation using a list."""
+class Stack[T]:
+    """A small typed stack wrapper around a list."""
 
-    def __init__(self):
-        """Initialize an empty stack."""
-        self.items = []
+    def __init__(self) -> None:
+        self._items: list[T] = []
 
-    def isEmpty(self) -> bool:
-        """Check if the stack is empty.
+    def is_empty(self) -> bool:
+        """Return ``True`` when the stack contains no items."""
+        return not self._items
 
-        Returns:
-            True if the stack is empty, False otherwise.
-        """
-        return self.items == []
+    def push(self, item: T) -> None:
+        """Push an item onto the stack."""
+        self._items.append(item)
 
-    def push(self, item):
-        """Push an item onto the stack.
+    def pop(self) -> T:
+        """Remove and return the top item."""
+        return self._items.pop()
 
-        Args:
-            item: The item to push onto the stack.
-        """
-        self.items.append(item)
-
-    def pop(self):
-        """Pop an item from the stack.
-
-        Returns:
-            The item at the top of the stack.
-
-        Raises:
-            IndexError: If the stack is empty.
-        """
-        return self.items.pop()
-
-    def peek(self):
-        """Peek at the top item of the stack without removing it.
-
-        Returns:
-            The item at the top of the stack.
-
-        Raises:
-            IndexError: If the stack is empty.
-        """
-        return self.items[len(self.items) - 1]
+    def peek(self) -> T:
+        """Return the top item without removing it."""
+        return self._items[-1]
 
     def size(self) -> int:
-        """Get the size of the stack.
+        """Return the number of items currently on the stack."""
+        return len(self._items)
 
-        Returns:
-            The number of items in the stack.
-        """
-        return len(self.items)
-
-    def contains(self, item) -> bool:
-        """Check if an item is in the stack.
-
-        Args:
-            item: The item to check for.
-
-        Returns:
-            True if the item is in the stack, False otherwise.
-        """
-        return item in self.items
+    def contains(self, item: T) -> bool:
+        """Return ``True`` if the item is currently stored in the stack."""
+        return item in self._items
