@@ -3,25 +3,20 @@
 import colorsys
 import math
 import random
-from collections.abc import Callable
 
 import matplotlib.pyplot as plt
 import networkx as nx
 
 import config
-from algorithms import nuutila, pearce, tarjan
+from algorithms.registry import list_algorithms, run_algorithm
+from graph_io.loaders import generate_graph
 
 DEBUG = config.DEBUG
 
 type ComponentMap = dict[int, int]
 type ComponentPartition = frozenset[frozenset[int]]
-type Algorithm = Callable[[nx.DiGraph], ComponentMap]
 
-ALGORITHMS: dict[str, Algorithm] = {
-    "Pearce": pearce.apply_alg,
-    "Nuutila": nuutila.apply_alg,
-    "Tarjan": tarjan.apply_alg,
-}
+SCC_ALGORITHMS = list_algorithms(category="scc")
 
 
 def component_partition(component_map: ComponentMap) -> ComponentPartition:
@@ -40,8 +35,11 @@ def expected_partition(graph: nx.DiGraph) -> ComponentPartition:
 
 
 def run_algorithms(graph: nx.DiGraph) -> dict[str, ComponentMap]:
-    """Execute every SCC implementation on the same graph."""
-    return {name: algorithm(graph) for name, algorithm in ALGORITHMS.items()}
+    """Execute every registered SCC implementation on the same graph."""
+    return {
+        algorithm.name: run_algorithm(algorithm.key, graph).component_map
+        for algorithm in SCC_ALGORITHMS
+    }
 
 
 def evaluate_algorithms(graph: nx.DiGraph) -> dict[str, bool]:
@@ -62,7 +60,13 @@ def test_algorithms(
     if edge_probability == 0:
         edge_probability = random.randint(1, 90) / 100
 
-    graph = nx.gnp_random_graph(node_size, edge_probability, seed=None, directed=True)
+    graph = generate_graph(
+        "gnp",
+        nodes=node_size,
+        edge_probability=edge_probability,
+        directed=True,
+        seed=None,
+    )
     algorithm_results = run_algorithms(graph)
     expected = expected_partition(graph)
     results = {
@@ -76,9 +80,9 @@ def test_algorithms(
             print("\nSSC: {}".format(component_nodes))
             for node in component_nodes:
                 print("\tRoot of node {}:".format(node), end="")
-                print(" {}".format(algorithm_results["Pearce"][node]), end="")
-                print(" {}".format(algorithm_results["Nuutila"][node]), end="")
-                print(" {}".format(algorithm_results["Tarjan"][node]))
+                for algorithm in SCC_ALGORITHMS:
+                    print(" {}".format(algorithm_results[algorithm.name][node]), end="")
+                print()
 
     for name, is_correct in results.items():
         print(f"{name}: {is_correct}")

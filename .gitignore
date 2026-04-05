@@ -22,9 +22,10 @@ test_graphs/
 
 # Results and outputs
 graphs/*.png
+results/
 *.xlsx
+notebooks/.ipynb_checkpoints/
 
 # OS
 .DS_Store
 Thumbs.db
-
