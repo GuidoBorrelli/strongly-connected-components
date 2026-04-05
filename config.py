@@ -17,6 +17,11 @@ TEST_EDGE_PROBABILITY = 0.05
 DEBUG = False
 DIGITS_ACCURACY = 8
 
+# Benchmark export settings
+BENCHMARK_OUTPUT_DIR = "results"
+BENCHMARK_SUITE_NAME = "scc-default"
+BENCHMARK_BASE_SEED = 0
+
 # Memory test settings
 GRAPH = False
 ALG_TEST = 1

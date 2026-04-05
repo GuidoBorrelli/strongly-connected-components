@@ -133,7 +133,7 @@ Run benchmarks with:
 python main.py  # with TEST=False in config.py and Python 3.14
 ```
 
-Results are plotted in `graphs/` directory.
+Benchmark mode writes `runs.csv`, `summary.csv`, and `metadata.json` to `results/`, and plots summary graphs to `graphs/`.
 
 ---
 

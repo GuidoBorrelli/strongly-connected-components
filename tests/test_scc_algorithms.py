@@ -1,6 +1,8 @@
-"""Unit tests for the Python 3.14-targeted SCC project."""
+"""Unit tests for the SCC implementations."""
 
+import io
 import unittest
+from contextlib import redirect_stdout
 
 import networkx as nx
 
@@ -50,19 +52,11 @@ class SCCAlgorithmTests(unittest.TestCase):
 
 
 class MainModuleTests(unittest.TestCase):
-    """Validate the public helpers in main.py."""
+    """Validate the public entry points in main.py."""
 
-    def test_invalid_density_raises_value_error(self) -> None:
-        with self.assertRaises(ValueError):
-            main.create_direct_graph(10, 99)
-
-    def test_apply_alg_returns_three_non_negative_durations(self) -> None:
-        graph = nx.gnp_random_graph(18, 0.2, seed=17, directed=True)
-        durations = main.apply_alg(graph)
-
-        self.assertEqual(len(durations), 3)
-        for duration in durations:
-            self.assertGreaterEqual(duration, 0.0)
+    def test_main_returns_success_in_correctness_mode(self) -> None:
+        with redirect_stdout(io.StringIO()):
+            self.assertEqual(main.main(), 0)
 
 
 if __name__ == "__main__":

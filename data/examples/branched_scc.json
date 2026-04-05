@@ -1,0 +1,14 @@
+{
+  "description": "Two non-trivial SCCs connected by a directed bridge.",
+  "directed": true,
+  "nodes": ["start", "a", "b", "c", "d", "sink"],
+  "edges": [
+    ["start", "a"],
+    ["a", "b"],
+    ["b", "a"],
+    ["b", "c"],
+    ["c", "d"],
+    ["d", "c"],
+    ["d", "sink"]
+  ]
+}
