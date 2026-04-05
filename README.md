@@ -22,8 +22,8 @@ This repository now targets Python 3.14 only.
 ```bash
 git clone https://github.com/GuidoBorrelli/strongly-connected-components.git
 cd strongly-connected-components
-python3.14 -m venv .venv
-source .venv/bin/activate
+conda create -n scc python=3.14.3 -y
+conda activate scc
 python -m pip install --upgrade pip
 python -m pip install -r requirements.txt
 python -m unittest discover -s tests -p 'test_*.py'
