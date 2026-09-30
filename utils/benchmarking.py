@@ -68,7 +68,7 @@ def plot_summary(
         plt.legend(list(colors), loc="upper left")
         plt.title(f"{density_label} graph - Variance")
         plt.xlabel("Number of nodes")
-        plt.ylabel("Variance [ms]")
+        plt.ylabel("Variance [ms²]")
         plt.ylim(0)
         plt.savefig(output_path / f"{density_label}-variance.png")
 

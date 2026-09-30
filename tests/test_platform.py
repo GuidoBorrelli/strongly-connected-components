@@ -3,14 +3,17 @@
 import json
 import tempfile
 import unittest
+from dataclasses import replace
+from datetime import datetime, timezone
 from pathlib import Path
+from unittest.mock import patch
 
 import networkx as nx
 import pandas as pd
 
 from algorithms.registry import list_algorithms, run_algorithm
 from benchmarks.exporters import export_benchmark_results
-from benchmarks.runner import run_benchmark_suite
+from benchmarks.runner import run_benchmark_suite, summarize_run_records
 from benchmarks.suites import BenchmarkCase
 from graph_io.examples import list_examples, load_example_graph
 from graph_io.loaders import generate_graph, load_graph
@@ -136,6 +139,55 @@ class BenchmarkTests(unittest.TestCase):
             with (export_dir / "metadata.json").open("r", encoding="utf-8") as file_obj:
                 exported_metadata = json.load(file_obj)
             self.assertEqual(exported_metadata["suite_name"], "unit-test-suite")
+
+
+class PlatformRegressionTests(unittest.TestCase):
+    def test_rejects_float_and_boolean_labels(self) -> None:
+        for labels in ([0.0, 1.0], [False, True]):
+            graph = nx.DiGraph()
+            graph.add_nodes_from(labels)
+            for algorithm in list_algorithms():
+                with self.subTest(labels=labels, algorithm=algorithm.key):
+                    with self.assertRaises(ValueError):
+                        run_algorithm(algorithm.key, graph)
+
+    def test_rejects_invalid_repeat_counts(self) -> None:
+        for count in (0, -1, 1.5, True):
+            with self.subTest(count=count):
+                with self.assertRaisesRegex(ValueError, "positive integer"):
+                    run_benchmark_suite([], repeat_count=count)
+
+    def test_variance_uses_squared_conversion(self) -> None:
+        case = BenchmarkCase("tiny", "Sparse", "gnp", 3, 0.2)
+        runs, _, _ = run_benchmark_suite([case], repeat_count=1)
+        records = [
+            replace(runs[0], runtime_seconds=value, runtime_milliseconds=value * 1000)
+            for value in (0.001, 0.003)
+        ]
+        summary = summarize_run_records(records)[0]
+        self.assertAlmostEqual(summary.mean_runtime_milliseconds, 2.0)
+        self.assertAlmostEqual(summary.variance_runtime_seconds, 0.000002)
+        self.assertAlmostEqual(summary.variance_runtime_milliseconds, 2.0)
+        self.assertEqual(
+            summarize_run_records(records[:1])[0].variance_runtime_seconds, 0
+        )
+
+    def test_exports_at_same_timestamp_are_distinct(self) -> None:
+        case = BenchmarkCase("tiny", "Sparse", "gnp", 3, 0.2)
+        runs, summaries, metadata = run_benchmark_suite([case], repeat_count=1)
+        with tempfile.TemporaryDirectory() as directory:
+            with patch("benchmarks.exporters.datetime") as clock:
+                clock.now.return_value = datetime(2026, 9, 30, tzinfo=timezone.utc)
+                first = export_benchmark_results(
+                    runs, summaries, metadata, output_root=directory
+                )
+                original = (first / "runs.csv").read_bytes()
+                second = export_benchmark_results(
+                    runs, summaries, metadata, output_root=directory
+                )
+            self.assertNotEqual(first, second)
+            self.assertEqual((first / "runs.csv").read_bytes(), original)
+            self.assertEqual((second / "runs.csv").read_bytes(), original)
 
 
 if __name__ == "__main__":

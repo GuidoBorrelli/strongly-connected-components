@@ -76,6 +76,13 @@ def run_benchmark_suite(
     base_seed: int = 0,
 ) -> tuple[list[BenchmarkRunRecord], list[BenchmarkSummaryRecord], dict[str, object]]:
     """Execute a benchmark suite and return raw records, summaries, and metadata."""
+    if (
+        isinstance(repeat_count, bool)
+        or not isinstance(repeat_count, int)
+        or repeat_count < 1
+    ):
+        raise ValueError("repeat_count must be a positive integer.")
+
     selected_algorithms = algorithms or list_algorithms(category="scc")
     run_records: list[BenchmarkRunRecord] = []
 
@@ -163,7 +170,7 @@ def summarize_run_records(
                 mean_runtime_seconds=mean(runtimes),
                 mean_runtime_milliseconds=mean(runtimes) * 1000,
                 variance_runtime_seconds=runtime_variance,
-                variance_runtime_milliseconds=runtime_variance * 1000,
+                variance_runtime_milliseconds=runtime_variance * 1_000_000,
                 min_runtime_seconds=min(runtimes),
                 max_runtime_seconds=max(runtimes),
                 avg_edge_count=mean(edge_counts),
