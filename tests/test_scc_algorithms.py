@@ -17,6 +17,20 @@ class SCCAlgorithmTests(unittest.TestCase):
         results = correctness_tests.evaluate_algorithms(graph)
         self.assertTrue(all(results.values()), msg=results)
 
+    def test_boundary_graphs(self) -> None:
+        empty = nx.DiGraph()
+        isolated = nx.empty_graph(5, create_using=nx.DiGraph)
+        self_loops = nx.DiGraph([(0, 0), (1, 1), (1, 2)])
+        disconnected = nx.DiGraph([(0, 1), (1, 0), (2, 3), (3, 2)])
+        for name, graph in (
+            ("empty", empty),
+            ("isolated", isolated),
+            ("self-loops", self_loops),
+            ("disconnected", disconnected),
+        ):
+            with self.subTest(graph=name):
+                self.assert_matches_networkx(graph)
+
     def test_known_component_structure(self) -> None:
         graph = nx.DiGraph()
         graph.add_nodes_from(range(6))

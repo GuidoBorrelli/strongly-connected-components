@@ -31,9 +31,11 @@ jobs:
       run: |
         # Stop the build if there are Python syntax errors or undefined names
         flake8 . --count --select=E9,F63,F7,F82 --show-source --statistics
-        # Exit-zero treats all errors as warnings
+
+    - name: Report style warnings
+      run: |
+        # Exit-zero treats style findings as warnings
         flake8 . --count --exit-zero --max-complexity=10 --max-line-length=100 --statistics --exclude=.git,.idea,__pycache__,.venv
-      continue-on-error: true
 
     - name: Check code formatting with black
       run: |

@@ -3,6 +3,7 @@
 import json
 from datetime import datetime, timezone
 from pathlib import Path
+from tempfile import mkdtemp
 
 import pandas as pd
 
@@ -19,8 +20,10 @@ def export_benchmark_results(
     """Write benchmark runs, summaries, and metadata to a timestamped directory."""
     root = Path(output_root)
     timestamp = datetime.now(timezone.utc).strftime("%Y%m%dT%H%M%SZ")
-    output_dir = root / f"{metadata['suite_name']}-{timestamp}"
-    output_dir.mkdir(parents=True, exist_ok=False)
+    root.mkdir(parents=True, exist_ok=True)
+    output_dir = Path(
+        mkdtemp(prefix=f"{metadata['suite_name']}-{timestamp}-", dir=root)
+    )
 
     runs_frame = pd.DataFrame([record.to_row() for record in run_records])
     summary_frame = pd.DataFrame([record.to_row() for record in summary_records])

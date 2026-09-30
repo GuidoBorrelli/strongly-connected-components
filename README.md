@@ -101,3 +101,22 @@ graphs/       sample benchmark outputs
 - Detailed algorithm notes are in `docs/ALGORITHMS.md`.
 - GitHub Actions setup notes are in `docs/GITHUB_ACTIONS_SETUP.md`.
 - Contribution guidelines are in `CONTRIBUTING.md`.
+
+## Execution and measurement limits
+
+The notebooks support kernels started in the repository root or `notebooks/`.
+Use the Python 3.14 environment with the repository requirements installed.
+Relative notebook output paths are resolved from the kernel working directory.
+
+The SCC implementations use recursive DFS and can raise `RecursionError` on
+long paths (including a 1,500-node chain). They are educational implementations;
+large graphs require an iterative implementation.
+
+Benchmark timing includes graph validation and result normalization. Algorithms
+run in a fixed order without warm-up, so results describe this harness rather
+than isolated algorithm performance. Variance is expressed in squared units
+(seconds² or milliseconds²). Exports made before the variance conversion fix
+understate milliseconds² by a factor of 1,000 and should be regenerated.
+
+Memory mode reports the change in process RSS after execution, not peak memory
+allocated by an algorithm.

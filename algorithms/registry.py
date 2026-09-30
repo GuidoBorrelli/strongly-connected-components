@@ -1,6 +1,7 @@
 """Registry of graph algorithms available in the platform."""
 
 from collections.abc import Iterable
+from numbers import Integral
 
 import networkx as nx
 
@@ -73,7 +74,13 @@ def ensure_graph_compatibility(graph: nx.DiGraph, algorithm: AlgorithmSpec) -> N
 
     if algorithm.requires_consecutive_int_nodes:
         expected_nodes = set(range(graph.number_of_nodes()))
-        if set(graph.nodes) != expected_nodes:
+        if (
+            any(
+                not isinstance(node, Integral) or isinstance(node, bool)
+                for node in graph.nodes
+            )
+            or set(graph.nodes) != expected_nodes
+        ):
             raise ValueError(
                 f"{algorithm.name} requires nodes labeled with consecutive integers from 0 to n - 1."
             )
