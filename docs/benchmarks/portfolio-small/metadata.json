@@ -1,0 +1,86 @@
+{
+  "algorithms": [
+    {
+      "category": "scc",
+      "implementation_path": "algorithms/pearce.py",
+      "key": "pearce",
+      "name": "Pearce"
+    },
+    {
+      "category": "scc",
+      "implementation_path": "algorithms/nuutila.py",
+      "key": "nuutila",
+      "name": "Nuutila"
+    },
+    {
+      "category": "scc",
+      "implementation_path": "algorithms/tarjan.py",
+      "key": "tarjan",
+      "name": "Tarjan"
+    }
+  ],
+  "base_seed": 42,
+  "cases": [
+    {
+      "case_key": "sparse-50",
+      "density_label": "Sparse",
+      "directed": true,
+      "edge_probability": 0.02,
+      "graph_kind": "fast_gnp",
+      "node_count": 50
+    },
+    {
+      "case_key": "medium-50",
+      "density_label": "Medium",
+      "directed": true,
+      "edge_probability": 0.06,
+      "graph_kind": "gnp",
+      "node_count": 50
+    },
+    {
+      "case_key": "dense-50",
+      "density_label": "Dense",
+      "directed": true,
+      "edge_probability": 0.6762433378062415,
+      "graph_kind": "gnp",
+      "node_count": 50
+    },
+    {
+      "case_key": "sparse-100",
+      "density_label": "Sparse",
+      "directed": true,
+      "edge_probability": 0.01,
+      "graph_kind": "fast_gnp",
+      "node_count": 100
+    },
+    {
+      "case_key": "medium-100",
+      "density_label": "Medium",
+      "directed": true,
+      "edge_probability": 0.03,
+      "graph_kind": "gnp",
+      "node_count": 100
+    },
+    {
+      "case_key": "dense-100",
+      "density_label": "Dense",
+      "directed": true,
+      "edge_probability": 0.6309573444801932,
+      "graph_kind": "gnp",
+      "node_count": 100
+    }
+  ],
+  "exported_at_utc": "20261114T114627Z",
+  "packages": {
+    "matplotlib": "3.10.8",
+    "networkx": "3.6.1",
+    "numpy": "2.4.4",
+    "pandas": "3.0.2",
+    "psutil": "7.2.2"
+  },
+  "platform": "macOS-26.6.2-arm64-arm-64bit-Mach-O",
+  "python_version": "3.14.3",
+  "repeat_count": 5,
+  "source_commit": "9f9d06275c7f5b73daf2d74810f976329bbc610e",
+  "suite_name": "portfolio-small"
+}

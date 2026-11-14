@@ -1,122 +1,109 @@
 # Strongly Connected Components
 
-This repository compares three algorithms for finding strongly connected components (SCCs) in directed graphs:
+**Three graph algorithms, one correctness and benchmarking harness.** Python implementations of Tarjan, Nuutila and Pearce find groups of nodes that can all reach one another in a directed graph.
 
-- Tarjan in `algorithms/tarjan.py`
-- Nuutila in `algorithms/nuutila.py`
-- Pearce in `algorithms/pearce.py`
+This project demonstrates algorithm implementation, explicit input contracts, differential testing against NetworkX, and reproducible performance measurement. It began as a 2017/2018 Politecnico di Milano course project and has been extended with reusable loaders, a registry, notebooks and CI.
 
-It started as a 2017/2018 Politecnico di Milano course project and now serves as a small test and benchmarking harness built on NetworkX.
+SCCs are useful when investigating cyclic dependencies, reachability and connected subsystems. This repository explores the underlying algorithms with generated and small example graphs; it does not claim a deployed business application.
 
-## Python Target
+## Evidence at a glance
 
-This repository now targets Python 3.14 only.
+| Engineering question | Inspect the evidence |
+| --- | --- |
+| Do the implementations agree on the answer? | [Correctness tests](tests/test_scc_algorithms.py): all 512 directed graphs on three nodes, plus boundary cases, known partitions and seeded random graphs, compared with NetworkX. |
+| Is the code reusable beyond a notebook? | [Algorithm registry](algorithms/registry.py), [typed results](algorithms/specs.py), [file loaders](graph_io/loaders.py) and [benchmark runner](benchmarks/runner.py). |
+| Can results be reproduced and scrutinized? | [Executed benchmark](docs/BENCHMARK_RESULTS.md): 90 timed executions, raw CSV, summaries, seeds and environment metadata. |
+| What runs automatically? | [GitHub Actions](https://github.com/GuidoBorrelli/strongly-connected-components/actions): unit tests and CLI checks on Linux, macOS and Windows, plus code-quality checks. |
 
-- Local development is pinned to Python 3.14.3 in `.python-version`
-- CI runs on the latest available Python 3.14 patch release
-- Dependency floors in `requirements.txt` were raised to versions known to support the 3.14 target
-- Python versions earlier than 3.14 are unsupported and should be considered deprecated for this repository
+## Quick start
 
-## Quick Start
+Requires **Python 3.14**; local development is pinned to 3.14.3 in `.python-version`. Earlier versions are unsupported.
 
 ```bash
 git clone https://github.com/GuidoBorrelli/strongly-connected-components.git
 cd strongly-connected-components
-conda create -n scc python=3.14.3 -y
-conda activate scc
-python -m pip install --upgrade pip
+python3.14 -m venv .venv
+source .venv/bin/activate
 python -m pip install -r requirements.txt
 python -m unittest discover -s tests -p 'test_*.py'
 python main.py
 ```
 
-`python main.py` still runs the repository's correctness harness and now exits non-zero if any implementation disagrees with `networkx.strongly_connected_components`.
+On Windows, create the environment with `py -3.14 -m venv .venv` and activate it with `.venv\Scripts\Activate.ps1` in PowerShell. Alternatively, use the existing Conda setup: `conda create -n scc python=3.14.3 -y`, then `conda activate scc`.
 
-## Platform Layers
-
-The repository now includes a small graph algorithms platform around the SCC implementations:
-
-- `algorithms/registry.py`: algorithm metadata, registry lookup, and normalized results
-- `graph_io/loaders.py`: reusable graph file loaders and generated graph helpers
-- `benchmarks/`: reproducible benchmark suites plus CSV/JSON export
-- `notebooks/`: tutorial notebooks that reuse the same library code
-
-## Run Modes
-
-All runtime switches live in `config.py`.
-
-- Correctness check: `TEST = True`, `MEMORY_TEST = False`
-- Benchmarks and plots: `TEST = False`
-  - writes `runs.csv`, `summary.csv`, and `metadata.json` to `results/`
-- Memory test:
-  1. Set `TEST = True`, `MEMORY_TEST = True`, `GRAPH = True`
-  2. Run `python main.py` once to create `test_graphs/memory_test_graph.pkl`
-  3. Set `GRAPH = False`
-  4. Choose `ALG_TEST` (`1` Pearce, `2` Nuutila, `3` Tarjan)
-  5. Run `python main.py` again
-
-Benchmark plots are written to `graphs/`.
-
-## Test Suite
-
-- Automated tests: `python -m unittest discover -s tests -p 'test_*.py'`
-- CLI smoke test: `python main.py`
-- Platform tests cover the registry, graph loaders, benchmark export, and SCC correctness
-
-## Examples
-
-Curated input graphs are available under `data/examples/`.
+The default CLI runs the correctness harness. It prints a Boolean result for each algorithm and exits non-zero if any partition disagrees with NetworkX. No credentials, external services or dataset downloads are required.
 
 ```python
-from algorithms.registry import list_algorithms, run_algorithm
+from algorithms.registry import run_algorithm
 from graph_io.examples import load_example_graph
 
 graph = load_example_graph("two_sccs")
-print([algorithm.key for algorithm in list_algorithms(category="scc")])
 result = run_algorithm("tarjan", graph)
-print(result.component_count)
+print(result.component_count)  # 3: two cycles and one singleton
+print(result.component_map)    # node -> component representative
 ```
 
-## Project Layout
+## Architecture and design choices
 
-```text
-algorithms/   SCC implementations
-benchmarks/   suites, runner, and export helpers
-data/         curated example graphs
-graph_io/     file loaders and generated graph helpers
-notebooks/    tutorial notebooks
-tests/        correctness helpers and unit tests
-utils/        benchmarking, memory tests, and stack utilities
-config.py     runtime configuration
-main.py       entry point
-docs/         extra notes on algorithms and GitHub Actions
-graphs/       sample benchmark outputs
+```mermaid
+flowchart LR
+    A[Example files or seeded graph generator] --> B[Graph loaders and normalization]
+    B --> C[Registry and input validation]
+    C --> D[Tarjan / Nuutila / Pearce]
+    D --> E[Normalized component map]
+    E --> F[Comparison with NetworkX]
+    C --> G[Benchmark runner]
+    G --> H[Raw runs + summaries + metadata]
+    H --> I[CSV / JSON / notebook plots]
 ```
 
-## Notes
+- **NetworkX** supplies the graph representation, file readers, generators and independent reference implementation. The three SCC algorithms are implemented in this repository.
+- **A common registry and result contract** separate algorithm selection from loading and measurement. Component IDs may differ across implementations, so tests compare partitions rather than raw labels.
+- **Seeded graph generation and raw exports** make input graphs repeatable and keep the aggregation inspectable. Timing includes validation and result normalization; it is not an isolated measurement of the DFS function.
+- **NumPy, pandas and Matplotlib** support numerical summaries, CSV export and plots. `psutil` supports the optional process-memory experiment.
 
-- The implementations expect directed NetworkX graphs whose nodes are integer-labeled from `0` to `n - 1`.
-- Use `graph_io.loaders.load_graph(..., relabel=True)` for file-based inputs that do not already satisfy that constraint.
-- Benchmarking imports NumPy directly, so it is listed explicitly in `requirements.txt`.
-- Detailed algorithm notes are in `docs/ALGORITHMS.md`.
-- GitHub Actions setup notes are in `docs/GITHUB_ACTIONS_SETUP.md`.
-- Contribution guidelines are in `CONTRIBUTING.md`.
+## Testing and results
 
-## Execution and measurement limits
+```bash
+python -m unittest discover -s tests -p 'test_*.py'
+python main.py
+```
 
-The notebooks support kernels started in the repository root or `notebooks/`.
-Use the Python 3.14 environment with the repository requirements installed.
-Relative notebook output paths are resolved from the kernel working directory.
+Local validation on 14 November 2026 passed **19 tests** under Python 3.14.3. The exhaustive three-node test checks 512 possible edge sets, including self-loops and isolated nodes, against all three implementations: 1,536 algorithm/reference comparisons within that test. Tests also cover loaders, invalid labels, repeat counts, variance units and collision-safe exports. CI re-runs the suite on pull requests; the Actions page records the current status.
 
-The SCC implementations use recursive DFS and can raise `RecursionError` on
-long paths (including a 1,500-node chain). They are educational implementations;
-large graphs require an iterative implementation.
+The [small benchmark](docs/BENCHMARK_RESULTS.md) shows how to reproduce the experiment without editing configuration. Its measurements are a worked example, not evidence that one algorithm is universally fastest.
 
-Benchmark timing includes graph validation and result normalization. Algorithms
-run in a fixed order without warm-up, so results describe this harness rather
-than isolated algorithm performance. Variance is expressed in squared units
-(seconds² or milliseconds²). Exports made before the variance conversion fix
-understate milliseconds² by a factor of 1,000 and should be regenerated.
+## Explore the implementation
 
-Memory mode reports the change in process RSS after execution, not peak memory
-allocated by an algorithm.
+| Path | Purpose |
+| --- | --- |
+| [`algorithms/`](algorithms/) | SCC implementations, registry and result types |
+| [`graph_io/`](graph_io/) | File loading, relabeling and generated graphs |
+| [`benchmarks/`](benchmarks/) | Cases, timing, summaries and exports |
+| [`tests/`](tests/) | Correctness and platform regression tests |
+| [`notebooks/`](notebooks/) | Platform introduction, SCC tutorial and benchmarking |
+| [`data/examples/`](data/examples/) | Small inspectable graphs |
+| [`config.py`](config.py), [`main.py`](main.py) | CLI configuration and entry point |
+
+The notebooks support kernels started in the repository root or `notebooks/`, using the same Python 3.14 environment. Relative output paths resolve from the kernel working directory. Algorithm background and literature references are in [docs/ALGORITHMS.md](docs/ALGORITHMS.md).
+
+## Full benchmark and memory modes
+
+Runtime switches live in `config.py`:
+
+- **Correctness:** `TEST = True`, `MEMORY_TEST = False`.
+- **Full benchmark:** `TEST = False`; `python main.py` exports `runs.csv`, `summary.csv` and `metadata.json` under `results/`, and plots under `graphs/`.
+- **Memory experiment:** set `TEST = True`, `MEMORY_TEST = True`, `GRAPH = True` and run once to generate a graph. Then set `GRAPH = False` and select `ALG_TEST` (`1` Pearce, `2` Nuutila, `3` Tarjan). See [memory notes](docs/MEMORY_NOTES.md).
+
+## Limitations and lessons
+
+- Inputs must be directed graphs with integer labels `0` through `n - 1`. File loaders can relabel inputs with `load_graph(..., relabel=True)`.
+- Recursive DFS can exceed Python's recursion limit, including on a 1,500-node chain. These implementations are educational; large or adversarial graphs need an iterative implementation and separate validation.
+- The original algorithms have linear-time designs, but this Python Nuutila implementation performs list-based stack membership checks. Do not infer a proven linear-time bound or production-scale performance for this implementation from the algorithm name.
+- Benchmarks use a fixed algorithm order without warm-up. Machine load and interpreter overhead affect small measurements. Dependency floors are specified rather than a complete lockfile; exported package versions identify the measured environment.
+- Memory mode measures the change in process RSS after execution, **not peak algorithm memory**. Existing charts and the 2018 memory notes are historical material, not current performance guarantees.
+- Timing variance is in squared units. Older exports made before the variance conversion correction understate milliseconds² by a factor of 1,000 and should be regenerated.
+
+## Provenance and license
+
+The repository identifies Guido Borrelli as author and includes an [MIT license](LICENSE). Algorithm references and attribution are retained in [the technical notes](docs/ALGORITHMS.md); the current benchmark uses generated graphs. The original course presentation remains historical supporting material. See [contribution guidelines](CONTRIBUTING.md) and [citation metadata](CITATION.cff).
