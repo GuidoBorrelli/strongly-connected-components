@@ -31,6 +31,22 @@ class SCCAlgorithmTests(unittest.TestCase):
             with self.subTest(graph=name):
                 self.assert_matches_networkx(graph)
 
+    def test_all_three_node_directed_graphs_match_networkx(self) -> None:
+        """Exhaust all 512 edge sets, including loops and isolated nodes."""
+        possible_edges = [
+            (source, target) for source in range(3) for target in range(3)
+        ]
+        for edge_mask in range(1 << len(possible_edges)):
+            graph = nx.DiGraph()
+            graph.add_nodes_from(range(3))
+            graph.add_edges_from(
+                edge
+                for index, edge in enumerate(possible_edges)
+                if edge_mask & (1 << index)
+            )
+            with self.subTest(edge_mask=edge_mask):
+                self.assert_matches_networkx(graph)
+
     def test_known_component_structure(self) -> None:
         graph = nx.DiGraph()
         graph.add_nodes_from(range(6))

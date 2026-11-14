@@ -38,11 +38,12 @@ Tarjan's algorithm is a linear-time depth-first search (DFS) based algorithm tha
 ## Nuutila's Algorithm
 
 ### Description
-Nuutila's algorithm is an improved version of Tarjan's algorithm with better space efficiency and different handling of strongly connected components.
+Nuutila and Soisalon-Soininen describe variants of Tarjan's algorithm with different stack handling. This repository uses a recursive Python implementation with path compression and list-based stack membership checks.
 
 ### Key Characteristics
-- **Time Complexity**: O(V + E)
-- **Space Complexity**: O(V) with better constant factors than Tarjan
+- **Published algorithm design**: O(V + E) time
+- **Implementation caveat**: `Stack.contains` scans a Python list; the published bound is not a verified bound for this implementation
+- **Space Complexity**: O(V); no measured peak-memory ranking is claimed
 - **Approach**: DFS with sentinel stack element optimization
 - **Difference from Tarjan**: Uses a sentinel (-1) in the stack for cleaner termination
 
@@ -57,7 +58,7 @@ Nuutila's algorithm is an improved version of Tarjan's algorithm with better spa
 `algorithms/nuutila.py`
 
 ### Key Optimization
-The sentinel value (-1) eliminates edge cases in stack management, making the algorithm cleaner and sometimes faster in practice.
+The sentinel value (-1) marks the bottom of the stack. Practical speed and memory use must be measured for the implementation and workload; they cannot be inferred from this choice alone.
 
 ---
 
@@ -93,13 +94,13 @@ This algorithm assigns component IDs in descending order, which can be useful fo
 
 | Aspect | Tarjan | Nuutila | Pearce |
 |--------|--------|---------|--------|
-| **Time Complexity** | O(V + E) | O(V + E) | O(V + E) |
+| **Published design: time** | O(V + E) | O(V + E)* | O(V + E) |
 | **Space Complexity** | O(V) | O(V) | O(V) |
 | **Stack Management** | Standard | With sentinel | Using rindex |
-| **Practical Speed** | Very Fast | Very Fast | Fast |
-| **Memory Usage** | Moderate | Low | Moderate |
 | **Code Complexity** | Medium | Medium | Medium |
-| **Easiest to Understand** | Yes | With explanation | No |
+| **Easiest to Understand** | Subjective | Subjective | Subjective |
+
+*The Python Nuutila implementation uses linear list-membership checks. These design bounds are not benchmark results or guarantees for this harness. See [the executed benchmark](BENCHMARK_RESULTS.md) for measurements and limits.
 
 ---
 
@@ -160,10 +161,10 @@ python main.py  # with MEMORY_TEST=True in config.py and Python 3.14
 - You want an educational implementation
 - Readability is a priority
 
-### Use Nuutila if:
-- You want slightly better memory efficiency
-- You prefer cleaner stack management
-- You need production-grade performance
+### Study Nuutila if:
+- You want to compare alternative stack management
+- You want to inspect how Python data structures affect an algorithm
+- You are evaluating the implementation against the published design
 
 ### Use Pearce if:
 - You need SCCs ordered in a specific topological manner
@@ -178,7 +179,7 @@ python main.py  # with MEMORY_TEST=True in config.py and Python 3.14
 
 2. Nuutila, E., & Soisalon-Soininen, E. (1994). "On finding the strongly connected components in a directed graph." Information Processing Letters, 49(1), 9-14.
 
-3. Pearce, D. J. (2005). "A space-efficient algorithm for computing strongly connected components." Information Processing Letters, 83(5), 231-235.
+3. Pearce, D. J. (2016). ["A space-efficient algorithm for finding strongly connected components."](https://doi.org/10.1016/j.ipl.2015.08.010) Information Processing Letters, 116(1), 47-52.
 
 4. NetworkX Documentation: https://networkx.org/
 
